@@ -117,62 +117,46 @@ int main()
     fastio();
     solve();
 }
-ll as(string s){
-    ll n=32;
-    ll i=0;
-    ll ans=0;
-    while(i<32){
-        if(s[n-i-1]=='1')
-        ans+=(1LL<<i);
-        i++;
-    }
-    return ans;
-}
 void solve()
 {
-    ll t;
+    int t;
     cin >> t;
     while (t--)
     {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> arr(n, 0);
-        vector<string> st(n);
+        ll n, a, b;
+        cin >> n >> a >> b;
+        vector<ll> arr(n, 0LL);
         for (ll i = 0; i < n; i++)
-        {
             cin >> arr[i];
-            string s = bitset<32>(arr[i]).to_string();
-            st[i] = s;
-        }
-        vector<ll> sum1(32, 0);
-        for (ll i = 0; i < 32; i++)
+        ll ans = 0;
+        ll curr = -1;
+        ll cap = 0;
+        // ans += b * arr[cap];
+        while (cap < n)
         {
-            ll c = 0;
-            for (ll j = 0; j < n; j++)
+            ll profit;
+            ll cost;
+            if (curr == -1)
             {
-                if (st[j][i] == '1')
-                    c++;
-            }
-            sum1[i] = c;
-        }
+                profit = (arr[cap]) * (n - (cap + 1)) * b;
+               ans += (arr[cap])*b;
+               cost = arr[cap]* a;
 
-        string ans;
-        for (ll i = 0; i < 32; i++)
-        {
-            ans += '0';
-        }
-        ll i = 1;
-        while (i < 32)
-        {
-            ll qw = n - sum1[i];
-            if (qw <= k)
-            {
-                ans[i] = '1';
-                k -= qw;
             }
-            i++;
+            else{
+                profit = (arr[cap] - arr[curr]) * b * (n - (cap + 1));
+                 ans += (arr[cap]-arr[curr])*b;
+                 cost = (arr[cap] - arr[curr]) * a;
+            }
+            
+            
+            if (profit > cost)
+            {
+                curr = cap;
+                ans += cost;
+            }
+            cap++;
         }
-        // cout<<ans<<"\n";
-        cout<<as(ans)<<"\n";
+        cout << ans << "\n";
     }
 }

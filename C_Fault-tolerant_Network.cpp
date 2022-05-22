@@ -109,6 +109,7 @@ void _print(map<T, V> v)
     cerr << "]";
 }
 void solve();
+ll bs(vector<pair<ll, ll>> &arr, ll target);
 int main()
 {
 #ifndef ONLINE_JUDGE
@@ -116,63 +117,64 @@ int main()
 #endif
     fastio();
     solve();
+    // vector<pair<ll,ll>> arr={mp(1LL,0LL),{4LL,0LL},{5LL,0LL}};
+    // ll target=1;
+    // cout<<bs(arr,target);
 }
-ll as(string s){
-    ll n=32;
-    ll i=0;
-    ll ans=0;
-    while(i<32){
-        if(s[n-i-1]=='1')
-        ans+=(1LL<<i);
-        i++;
+ll bs(vector<ll> &arr, ll target)
+{
+    int l = 0, r = arr.size() - 1;
+    while (l <= r)
+    {
+        if(r - l <= 2)
+            break;
+        int mid = (l + r) / 2;
+        ll m1 = arr[mid];
+        if (m1 == target)
+            return 0;
+        else if (target < m1)
+            r = mid - 1;
+        else
+            l = mid + 1;
     }
-    return ans;
+    return l;
 }
 void solve()
 {
-    ll t;
+    int t;
     cin >> t;
     while (t--)
     {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> arr(n, 0);
-        vector<string> st(n);
+        ll n;
+        cin >> n;
+        vector<ll> a(n, 0);
+        vector<ll> b(n, 0);
         for (ll i = 0; i < n; i++)
-        {
-            cin >> arr[i];
-            string s = bitset<32>(arr[i]).to_string();
-            st[i] = s;
-        }
-        vector<ll> sum1(32, 0);
-        for (ll i = 0; i < 32; i++)
-        {
-            ll c = 0;
-            for (ll j = 0; j < n; j++)
-            {
-                if (st[j][i] == '1')
-                    c++;
-            }
-            sum1[i] = c;
-        }
-
-        string ans;
-        for (ll i = 0; i < 32; i++)
-        {
-            ans += '0';
-        }
-        ll i = 1;
-        while (i < 32)
-        {
-            ll qw = n - sum1[i];
-            if (qw <= k)
-            {
-                ans[i] = '1';
-                k -= qw;
-            }
-            i++;
-        }
-        // cout<<ans<<"\n";
-        cout<<as(ans)<<"\n";
+            cin >> a[i];
+        for (ll i = 0; i < n; i++)
+            cin >> b[i];
+        ll x1=INF;
+        ll x2=INF;
+        ll x3=INF;
+        ll x4=INF;
+        for(ll i=0;i<n;i++)
+        x1=min(x1,abs(b[i]-a[0]));
+        for(ll i=0;i<n;i++)
+        x2=min(x2,abs(b[i]-a[n-1]));
+        for(ll i=0;i<n;i++)
+        x3=min(x3,abs(a[i]-b[0]));
+        for(ll i=0;i<n;i++)
+        x4=min(x4,abs(a[i]-b[n-1]));
+        ll x5=abs(a[0]-b[0]);
+        ll x6=abs(a[n-1]-b[n-1]);
+        ll x7=abs(a[0]-b[n-1]);
+        ll x8=abs(b[0]-a[n-1]);
+        //   cout<<x1<<" "<<x2<<" "<<x3<<" "<<x4<<" "<<x5<<" "<<x6<<" "<<x7<<" "<<x8<<"\n";
+        ll ans=min(x5+x6,x7+x8);
+        ans=min(ans,x1+x2+x3+x4);
+    //   cout<<x1+x2+x3+x4<<"\n";
+        ans=min(ans,min(x5+x2+x4,min(x6+x1+x3,min(x7+x2+x3,x8+x1+x4))));
+        
+        cout << ans << "\n";
     }
 }

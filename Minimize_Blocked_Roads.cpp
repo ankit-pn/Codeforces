@@ -117,62 +117,92 @@ int main()
     fastio();
     solve();
 }
-ll as(string s){
-    ll n=32;
-    ll i=0;
-    ll ans=0;
-    while(i<32){
-        if(s[n-i-1]=='1')
-        ans+=(1LL<<i);
-        i++;
+int initt(vector<int> &cities, int j, vector<vector<pair<int, int>>> &g)
+{
+
+    int sum = 1;
+    if(g[j].empty())
+    return 1;
+
+    for (auto &it : g[j])
+    {
+        sum += initt(cities, it.first, g);
     }
-    return ans;
+    return sum;
 }
 void solve()
 {
-    ll t;
+    int t;
     cin >> t;
     while (t--)
     {
-        ll n, k;
+        int n, k;
         cin >> n >> k;
-        vector<ll> arr(n, 0);
-        vector<string> st(n);
-        for (ll i = 0; i < n; i++)
+        vector<vector<pair<int, int>>> g(n + 1);
+        vector<int> cities(n+1, 0);
+        for (int i = 0; i < n - 1; i++)
         {
-            cin >> arr[i];
-            string s = bitset<32>(arr[i]).to_string();
-            st[i] = s;
+            int a, b, c;
+            cin >> a >> b >> c;
+            g[a].push_back(mp(b, c));
         }
-        vector<ll> sum1(32, 0);
-        for (ll i = 0; i < 32; i++)
+        queue<pair<int, int>> que;
+        int f = 0;
+        int count = 0;
+        for(int i=1;i<=n;i++){
+            cities[i]=initt(cities,i,g);
+        }
+        // for(auto it:cities)
+        // cout<<it<<" ";
+        for (int i = 0; i < g[1].size(); i++)
         {
-            ll c = 0;
-            for (ll j = 0; j < n; j++)
+            if (g[1][i].second == 1)
             {
-                if (st[j][i] == '1')
-                    c++;
+                k -= cities[g[1][i].first];
+                count++;
             }
-            sum1[i] = c;
+            else
+            {
+                que.push(g[1][i]);
+            }
+            if (k <= 0)
+            {
+                cout << count << "\n";
+                f = 1;
+                break;
+            }
         }
+        if (f)
+            continue;
 
-        string ans;
-        for (ll i = 0; i < 32; i++)
+        while (!que.empty())
         {
-            ans += '0';
-        }
-        ll i = 1;
-        while (i < 32)
-        {
-            ll qw = n - sum1[i];
-            if (qw <= k)
+            auto x = que.front();
+            que.pop();
+            for (int i = 0; i < g[x.first].size(); i++)
             {
-                ans[i] = '1';
-                k -= qw;
+                if (g[x.first][i].second == 1)
+                {
+                    k -= cities[g[x.first][i].first];
+                    count++;
+                }
+                else
+                {
+                    que.push(g[x.first][i]);
+                }
+                if (k <= 0)
+                {
+                    cout << count << "\n";
+                    f = 1;
+                    break;
+                }
             }
-            i++;
+            if(f)
+            break;
         }
-        // cout<<ans<<"\n";
-        cout<<as(ans)<<"\n";
+        if (f)
+        continue;
+        else
+        cout<<-1<<"\n";
     }
 }

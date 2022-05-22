@@ -117,62 +117,58 @@ int main()
     fastio();
     solve();
 }
-ll as(string s){
-    ll n=32;
-    ll i=0;
-    ll ans=0;
-    while(i<32){
-        if(s[n-i-1]=='1')
-        ans+=(1LL<<i);
-        i++;
+bool isp(int n)
+{
+    string s = to_string(n);
+    string t = s;
+    reverse(s.begin(), s.end());
+    if (s == t)
+        return 1;
+    return 0;
+}
+void generate(vector<int> &arr)
+{
+    int n = 4 * 10000;
+    for (int i = 1; i < n; i++)
+    {
+        if (isp(i))
+            arr.push_back(i);
     }
-    return ans;
+}
+void cha(vector<int> &arr, vector<vector<int>> &dp)
+{
+    int szz = arr.size();
+
+    for (int i = 0; i <= szz; i++)
+        dp[i][0] = 1;
+    for (int i = 0; i <= 40000; i++)
+        dp[0][i] = 0;
+    for (int i = 1; i <= szz; i++)
+    {
+        for (int j = 1; j <= 40000; j++)
+        {
+            if (j >= arr[i - 1])
+                dp[i][j] = (dp[i][j - arr[i - 1]] + dp[i - 1][j])%MOD;
+            else
+                dp[i][j] = dp[i - 1][j];
+        }
+    }
 }
 void solve()
 {
-    ll t;
+    int t;
     cin >> t;
-    while (t--)
-    {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> arr(n, 0);
-        vector<string> st(n);
-        for (ll i = 0; i < n; i++)
-        {
-            cin >> arr[i];
-            string s = bitset<32>(arr[i]).to_string();
-            st[i] = s;
-        }
-        vector<ll> sum1(32, 0);
-        for (ll i = 0; i < 32; i++)
-        {
-            ll c = 0;
-            for (ll j = 0; j < n; j++)
-            {
-                if (st[j][i] == '1')
-                    c++;
-            }
-            sum1[i] = c;
-        }
+    vector<int> arr;
+    generate(arr);
+    int szz = arr.size();
+    vector<vector<int>> dp(szz + 1, vector<int>(40001, 0));
+    cha(arr, dp);
+    // cout<<dp[szz][12];
+  
 
-        string ans;
-        for (ll i = 0; i < 32; i++)
-        {
-            ans += '0';
-        }
-        ll i = 1;
-        while (i < 32)
-        {
-            ll qw = n - sum1[i];
-            if (qw <= k)
-            {
-                ans[i] = '1';
-                k -= qw;
-            }
-            i++;
-        }
-        // cout<<ans<<"\n";
-        cout<<as(ans)<<"\n";
+    while(t--){
+     int n;
+     cin>>n;
+        cout<<dp[szz][n]<<"\n";
     }
 }

@@ -117,62 +117,27 @@ int main()
     fastio();
     solve();
 }
-ll as(string s){
-    ll n=32;
-    ll i=0;
-    ll ans=0;
-    while(i<32){
-        if(s[n-i-1]=='1')
-        ans+=(1LL<<i);
-        i++;
-    }
-    return ans;
-}
 void solve()
 {
-    ll t;
+    int t;
     cin >> t;
     while (t--)
     {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> arr(n, 0);
-        vector<string> st(n);
-        for (ll i = 0; i < n; i++)
-        {
-            cin >> arr[i];
-            string s = bitset<32>(arr[i]).to_string();
-            st[i] = s;
-        }
-        vector<ll> sum1(32, 0);
-        for (ll i = 0; i < 32; i++)
-        {
-            ll c = 0;
-            for (ll j = 0; j < n; j++)
-            {
-                if (st[j][i] == '1')
-                    c++;
+        int n;
+        cin >> n;
+        vector<int> arr(n, 0);
+        for(int i=0;i<n;i++)
+        cin>>arr[i];
+        int x=-1;
+        for(int i=0;i<n;i++){
+            if(i!=arr[i] && x==-1){
+                x=arr[i];
             }
-            sum1[i] = c;
-        }
+            else if(i!=arr[i]){
+                x&=arr[i];
+            }
 
-        string ans;
-        for (ll i = 0; i < 32; i++)
-        {
-            ans += '0';
         }
-        ll i = 1;
-        while (i < 32)
-        {
-            ll qw = n - sum1[i];
-            if (qw <= k)
-            {
-                ans[i] = '1';
-                k -= qw;
-            }
-            i++;
-        }
-        // cout<<ans<<"\n";
-        cout<<as(ans)<<"\n";
+        cout<<x<<"\n";
     }
 }

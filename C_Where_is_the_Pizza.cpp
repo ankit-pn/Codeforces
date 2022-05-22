@@ -117,62 +117,58 @@ int main()
     fastio();
     solve();
 }
-ll as(string s){
-    ll n=32;
-    ll i=0;
-    ll ans=0;
-    while(i<32){
-        if(s[n-i-1]=='1')
-        ans+=(1LL<<i);
-        i++;
-    }
-    return ans;
-}
 void solve()
 {
-    ll t;
+    int t;
     cin >> t;
     while (t--)
     {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> arr(n, 0);
-        vector<string> st(n);
-        for (ll i = 0; i < n; i++)
-        {
-            cin >> arr[i];
-            string s = bitset<32>(arr[i]).to_string();
-            st[i] = s;
+        int n;
+        cin >> n;
+        vector<int> a(n, 0), b(n, 0), c(n+1, 0), visited(n + 1, 0), tra(n + 1, 0),cc(n+1,0);
+        for (int i = 0; i < n; i++)
+            cin >> a[i];
+        for (int i = 0; i < n; i++)
+            cin >> b[i];
+        for (int i = 1; i <=n; i++){
+            cin >> c[i];
+            cc[c[i]]=1;
         }
-        vector<ll> sum1(32, 0);
-        for (ll i = 0; i < 32; i++)
+        for (int i = 0; i < n; i++)
         {
-            ll c = 0;
-            for (ll j = 0; j < n; j++)
+            tra[a[i]] = b[i];
+        }
+        vector<bool> vis(n + 1, 0);
+        int ans = 1;
+        int i = 1;
+        while (i <= n)
+        {
+            if (vis[i] == 0)
             {
-                if (st[j][i] == '1')
-                    c++;
-            }
-            sum1[i] = c;
-        }
+                vis[i] = 1;
+                int f = 0;
+                int j = tra[i];
+                vis[j] = 1;
+                int szz=0;
+                while (j != i)
+                {
+                    if (cc[j] != 0)
+                        f = 1;
+                    j = tra[j];
+                     vis[j] = 1;
 
-        string ans;
-        for (ll i = 0; i < 32; i++)
-        {
-            ans += '0';
-        }
-        ll i = 1;
-        while (i < 32)
-        {
-            ll qw = n - sum1[i];
-            if (qw <= k)
-            {
-                ans[i] = '1';
-                k -= qw;
+                    if (cc[j] != 0)
+                        f = 1;
+                    szz++;
+                }
+                debug(f)
+                if (f==0 && szz>0){
+                    ans *= 2;
+                    ans%=MOD;
+                }
             }
             i++;
         }
-        // cout<<ans<<"\n";
-        cout<<as(ans)<<"\n";
+        cout<<ans<<"\n";
     }
 }
